@@ -1,0 +1,18 @@
+{
+  "name": "demo",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "djye",
+  "license": "MIT",
+  "scripts": {
+    "build": "npx tsc"
+  },
+  "dependencies": {
+    "@flashbots/ethers-provider-bundle": "^0.6.2",
+    "dotenv": "^16.3.1",
+    "ethers": "5.7.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.2.2"
+  }
+}
