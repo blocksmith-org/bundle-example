@@ -6,7 +6,8 @@ import { config } from "dotenv";
 config();
 
 const RPC_URL = "https://binance.llamarpc.com";
-const TXBOOST_URL = "https://relay-bsc.txboost.io";
+const SUBMISSION_URL = "https://relay-bsc.txboost.io";
+const SIMULATION_URL = "https://simulation-bsc.txboost.io";
 
 async function demo() {
   const wallet = new ethers.Wallet(process.env.PRIV_KEY!);
@@ -15,7 +16,19 @@ async function demo() {
   const flashbotsProvider = await FlashbotsBundleProvider.create(
     provider,
     wallet,
-    { url: TXBOOST_URL, headers: { Authorization: process.env.AUTHORIZATION! } }
+    {
+      url: SUBMISSION_URL,
+      headers: { Authorization: process.env.AUTHORIZATION! },
+    }
+  );
+
+  const simulationProvider = await FlashbotsBundleProvider.create(
+    provider,
+    wallet,
+    {
+      url: SIMULATION_URL,
+      headers: { Authorization: process.env.AUTHORIZATION! },
+    }
   );
 
   const chainId = await provider
@@ -33,7 +46,7 @@ async function demo() {
 
   const rawTx = await wallet.signTransaction(tx);
   const target = (await provider.getBlockNumber()) + 1;
-  const simulated = await flashbotsProvider.simulate([rawTx], target);
+  const simulated = await simulationProvider.simulate([rawTx], target);
   console.log(simulated);
 
   const bundleSubmission = await flashbotsProvider.sendRawBundle(

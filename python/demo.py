@@ -9,7 +9,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 url = 'https://binance.llamarpc.com'
-txboost_url = 'https://relay-bsc.txboost.io'
+submission_url = 'https://relay-bsc.txboost.io'
+simulation_url = 'https://simulation-bsc.txboost.io'
+
 
 def attach_flashbots(
     w3,
@@ -26,7 +28,8 @@ def attach_flashbots(
 
     s = requests.Session()
     s.headers.update({'authorization': os.getenv('AUTHORIZATION')})
-    flashbots_provider = FlashbotProvider(signature_account, endpoint_uri, session=s)
+    flashbots_provider = FlashbotProvider(
+        signature_account, endpoint_uri, session=s)
 
     flash_middleware = construct_flashbots_middleware(flashbots_provider)
     w3.middleware_onion.add(flash_middleware)
@@ -34,17 +37,28 @@ def attach_flashbots(
     # attach modules to add the new namespace commands
     attach_modules(w3, {"flashbots": (Flashbots,)})
 
-def main():
-    # Connect to the Ethereum network
+
+def create_w3_for_bundle_simulation(account):
     w3 = Web3(Web3.HTTPProvider(url))
     w3.middleware_onion.inject(geth_poa_middleware, layer=0)
+    attach_flashbots(w3, account, simulation_url)
+    return w3
 
-    # Import an account using a private key
+
+def create_w3_for_bundle_submission(account):
+    w3 = Web3(Web3.HTTPProvider(url))
+    w3.middleware_onion.inject(geth_poa_middleware, layer=0)
+    attach_flashbots(w3, account, submission_url)
+    return w3
+
+
+def main():
     private_key = os.getenv('PRIV_KEY')
     account = Account.from_key(private_key)
-    nonce = w3.eth.get_transaction_count(account.address)
+    w3 = create_w3_for_bundle_submission(account)
+    sim_w3 = create_w3_for_bundle_simulation(account)
 
-    attach_flashbots(w3, account, txboost_url)
+    nonce = w3.eth.get_transaction_count(account.address)
 
     # Create a transaction
     tx = {
@@ -63,8 +77,8 @@ def main():
     ]
 
     # Simulate the bundle
-    target = w3.eth.blockNumber + 1
-    simulated = w3.flashbots.simulate(bundle, target)
+    target = sim_w3.eth.blockNumber + 1
+    simulated = sim_w3.flashbots.simulate(bundle, target)
     print("bundle simulated:")
     print(simulated)
 
