@@ -5,7 +5,7 @@ import { config } from "dotenv";
 
 config();
 
-const RPC_URL = "https://binance.llamarpc.com";
+const RPC_URL = "http://localhost:8545";
 const SUBMISSION_URL = "https://relay-bsc.txboost.io";
 const SIMULATION_URL = "https://simulation-bsc.txboost.io";
 

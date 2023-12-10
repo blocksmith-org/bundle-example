@@ -8,7 +8,7 @@ from eth_account import Account
 from dotenv import load_dotenv
 load_dotenv()
 
-url = 'https://binance.llamarpc.com'
+url = 'http://localhost:8545'
 submission_url = 'https://relay-bsc.txboost.io'
 simulation_url = 'https://simulation-bsc.txboost.io'
 
