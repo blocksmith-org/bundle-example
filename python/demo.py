@@ -9,8 +9,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 url = 'http://localhost:8545'
-submission_url = 'https://relay-bsc.txboost.io'
-simulation_url = 'https://simulation-bsc.txboost.io'
+submission_url = 'https://bsc-builder.blocksmith.org'
+simulation_url = 'https://bsc-simulation.blocksmith.org'
 
 
 def attach_flashbots(

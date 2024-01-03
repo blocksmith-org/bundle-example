@@ -6,8 +6,8 @@ import { config } from "dotenv";
 config();
 
 const RPC_URL = "http://localhost:8545";
-const SUBMISSION_URL = "https://relay-bsc.txboost.io";
-const SIMULATION_URL = "https://simulation-bsc.txboost.io";
+const SUBMISSION_URL = "https://bsc-builder.blocksmith.org";
+const SIMULATION_URL = "https://bsc-simulation.blocksmith.org";
 
 async function demo() {
   const wallet = new ethers.Wallet(process.env.PRIV_KEY!);
