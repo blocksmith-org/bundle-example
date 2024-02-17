@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package meshgateway;
+option go_package = "./meshgateway";
+
+message SubscribeTxReq {
+  int64 chainId = 1;
+}
+
+message SubscribeTxResp {
+  string tx = 1;
+}
+service meshgateway {
+  rpc SubscribeTx(SubscribeTxReq) returns(stream SubscribeTxResp);
+}

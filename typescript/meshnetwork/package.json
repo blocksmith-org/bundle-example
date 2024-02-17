@@ -1,0 +1,22 @@
+{
+  "name": "meshnetwork-demo",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "djye",
+  "license": "MIT",
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3",
+    "grpc_tools_node_protoc_ts": "^5.3.3",
+    "grpc-tools": "^1.12.4"
+  },
+  "scripts": {
+    "start": "ts-node index.ts",
+    "gen-grpc-js": "mkdir ./generated; npx grpc_tools_node_protoc --js_out=import_style=commonjs,binary:./generated --grpc_out=./generated --plugin=protoc-gen-grpc=`which grpc_tools_node_protoc_plugin` -I ./ ./meshgateway.proto",
+    "gen-grpc-ts": "npx grpc_tools_node_protoc --plugin=protoc-gen-ts=./node_modules/.bin/protoc-gen-ts --ts_out=./generated -I ./ meshgateway.proto",
+    "gen": "npm run gen-grpc-js; npm run gen-grpc-ts"
+  },
+  "dependencies": {
+    "grpc": "^1.24.11"
+  }
+}
