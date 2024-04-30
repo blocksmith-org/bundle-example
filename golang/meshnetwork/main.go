@@ -3,11 +3,13 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
+	"meshnetwork-example/meshgateway"
+
 	"github.com/ethereum/go-ethereum/core/types"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/metadata"
-	"meshnetwork-example/meshgateway"
 )
 
 func main() {
@@ -15,13 +17,14 @@ func main() {
 	token := "Basic xxx"
 	conn, err := grpc.Dial(url, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
-		panic(err)
+		log.Fatal("dial", err)
 	}
 	defer conn.Close()
+
 	client := meshgateway.NewMeshgatewayClient(conn)
 	SubscribeTx(client, token)
-
 }
+
 func SubscribeTx(client meshgateway.MeshgatewayClient, token string) {
 	ctx := metadata.NewOutgoingContext(context.TODO(), metadata.Pairs("authorization", token))
 	resp, err := client.SubscribeTx(ctx, &meshgateway.SubscribeTxReq{
@@ -30,19 +33,19 @@ func SubscribeTx(client meshgateway.MeshgatewayClient, token string) {
 	if err != nil {
 		return
 	}
+
 	for {
 		data, err := resp.Recv()
 		if err != nil {
-			fmt.Println("err", err)
-			return
+			log.Fatal("recv tx", err)
 		}
+
 		tx := &types.Transaction{}
 		err = tx.UnmarshalJSON([]byte(data.Tx))
 		if err != nil {
-			fmt.Println("err", err)
-			return
+			log.Fatal("unmarshal json", err)
 		}
+
 		fmt.Println("hash", tx.Hash())
 	}
-
 }
