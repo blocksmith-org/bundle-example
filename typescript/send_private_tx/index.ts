@@ -4,8 +4,8 @@ import { config } from "dotenv";
 
 config();
 
-const RPC_URL = "https://bsc-dataseed.bnbchain.org";
-const BLOCKSMITH_URL = "https://bsc-builder.blocksmith.org";
+const RPC_URL = process.env.RPC_URL!;
+const BLOCKSMITH_URL = process.env.BLOCKSMITH_URL!;
 
 async function demo() {
   const wallet = new ethers.Wallet(process.env.PRIV_KEY!);
@@ -34,7 +34,7 @@ async function demo() {
   const hash = await privateProvider.perform("sendTransaction", {
     signedTransaction: rawTx,
   });
-  console.log(hash);
+  console.log(`https://bscscan.com/tx/${hash}`);
   const receipt = await provider.waitForTransaction(hash);
   console.log(receipt.status);
 }
